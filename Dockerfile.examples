@@ -1,0 +1,15 @@
+FROM opencv-opencl:opencv
+
+ARG opencv_version=4.2.0
+
+RUN mkdir -p /home/opencv-opencl/opencv-$opencv_version/samples/build
+WORKDIR /home/opencv-opencl/opencv-$opencv_version/samples/build
+
+RUN cmake ..
+RUN make -j4
+
+# Delete source and artifacts?
+
+WORKDIR /home/opencv-opencl
+
+CMD ["/bin/bash"]

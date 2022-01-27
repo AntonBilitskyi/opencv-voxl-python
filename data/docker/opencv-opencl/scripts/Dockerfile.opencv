@@ -1,0 +1,85 @@
+FROM opencv-opencl:base
+
+ARG opencv_version=4.2.0
+
+WORKDIR /home/opencv-opencl
+
+RUN wget https://github.com/opencv/opencv/archive/$opencv_version.zip
+
+RUN unzip $opencv_version.zip
+RUN rm $opencv_version.zip
+
+RUN wget https://github.com/opencv/opencv_contrib/archive/$opencv_version.zip
+
+RUN unzip $opencv_version.zip
+RUN rm $opencv_version.zip
+
+WORKDIR opencv-$opencv_version/build
+
+RUN cmake -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_INSTALL_PREFIX=/usr \
+          -DWITH_OPENMP=ON \
+          -DWITH_OPENCL=ON \
+          -DHAVE_OPENCL=1 \
+          -DOPENCV_EXTRA_MODULES_PATH=/home/opencv-opencl/opencv_contrib-$opencv_version/modules \
+          -DBUILD_opencv_aruco=ON \
+          -DBUILD_opencv_bgsegm=OFF \
+          -DBUILD_opencv_bioinspired=OFF \
+          -DBUILD_opencv_ccalib=OFF \
+          -DBUILD_opencv_cnn_3dobj=OFF \
+          -DBUILD_opencv_cudaarithm=OFF \
+          -DBUILD_opencv_cudabgsegm=OFF \
+          -DBUILD_opencv_cudacodec=OFF \
+          -DBUILD_opencv_cudafeatures2d=OFF \
+          -DBUILD_opencv_cudafilters=OFF \
+          -DBUILD_opencv_cudaimgproc=OFF \
+          -DBUILD_opencv_cudalegacy=OFF \
+          -DBUILD_opencv_cudaobjdetect=OFF \
+          -DBUILD_opencv_cudaoptflow=OFF \
+          -DBUILD_opencv_cudastereo=OFF \
+          -DBUILD_opencv_cudawarping=OFF \
+          -DBUILD_opencv_cudev=OFF \
+          -DBUILD_opencv_cvv=OFF \
+          -DBUILD_opencv_datasets=OFF \
+          -DBUILD_opencv_dnn_objdetect=ON \
+          -DBUILD_opencv_dnns_easily_fooled=OFF \
+          -DBUILD_opencv_dnn_superres=OFF \
+          -DBUILD_opencv_dpm=OFF \
+          -DBUILD_opencv_face=OFF \
+          -DBUILD_opencv_freetype=OFF \
+          -DBUILD_opencv_fuzzy=OFF \
+          -DBUILD_opencv_hdf=OFF \
+          -DBUILD_opencv_hfs=OFF \
+          -DBUILD_opencv_img_hash=OFF \
+          -DBUILD_opencv_line_descriptor=OFF \
+          -DBUILD_opencv_matlab=OFF \
+          -DBUILD_opencv_optflow=OFF \
+          -DBUILD_opencv_ovis=OFF \
+          -DBUILD_opencv_phase_unwrapping=OFF \
+          -DBUILD_opencv_plot=OFF \
+          -DBUILD_opencv_quality=OFF \
+          -DBUILD_opencv_reg=OFF \
+          -DBUILD_opencv_rgbd=OFF \
+          -DBUILD_opencv_saliency=OFF \
+          -DBUILD_opencv_sfm=OFF \
+          -DBUILD_opencv_shape=OFF \
+          -DBUILD_opencv_stereo=OFF \
+          -DBUILD_opencv_structured_light=OFF \
+          -DBUILD_opencv_superres=OFF \
+          -DBUILD_opencv_surface_matching=OFF \
+          -DBUILD_opencv_text=OFF \
+          -DBUILD_opencv_tracking=OFF \
+          -DBUILD_opencv_videostab=OFF \
+          -DBUILD_opencv_viz=OFF \
+          -DBUILD_opencv_xfeatures2d=OFF \
+          -DBUILD_opencv_ximgproc=OFF \
+          -DBUILD_opencv_xobjdetect=OFF \
+          -DBUILD_opencv_xphoto=OFF \
+          -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -std=c++11 -march=armv8-a+simd" ..
+
+RUN make -j4
+RUN make install
+
+WORKDIR /home/opencv-opencl
+
+CMD ["/bin/bash"]

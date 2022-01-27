@@ -1,0 +1,46 @@
+
+FROM aarch64/ubuntu:xenial
+
+RUN apt-get update
+
+RUN apt-get install -y vim
+RUN apt-get install -y strace
+RUN apt-get install -y libglib2.0-0
+RUN apt-get install -y g++
+RUN apt-get install -y build-essential
+RUN apt-get install -y cmake
+RUN apt-get install -y git
+RUN apt-get install -y libgtk2.0-dev
+RUN apt-get install -y pkg-config
+RUN apt-get install -y libavcodec-dev
+RUN apt-get install -y libavformat-dev
+RUN apt-get install -y libswscale-dev
+RUN apt-get install -y python-dev
+RUN apt-get install -y python-numpy
+RUN apt-get install -y libtbb2
+RUN apt-get install -y libtbb-dev
+RUN apt-get install -y libjpeg-dev
+RUN apt-get install -y libpng-dev
+RUN apt-get install -y libtiff-dev
+RUN apt-get install -y libjasper-dev
+RUN apt-get install -y libdc1394-22-dev
+RUN apt-get install -y wget
+RUN apt-get install -y unzip
+
+RUN mkdir -p /home/opencv-opencl
+WORKDIR /home/opencv-opencl
+
+COPY modalai-opencl-dev_1.0-1.deb .
+
+RUN dpkg -i modalai-opencl-dev_1.0-1.deb
+RUN apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev
+RUN wget https://www.python.org/ftp/python/3.9.1/Python-3.9.1.tgz
+RUN tar -xf Python-3.9.1.tgz
+RUN cd Python-3.9.1
+RUN ./configure --enable-optimizations
+RUN make -j 4
+RUN make altinstall
+RUN apt-get install -y python3-pip
+RUN pip3 install opencv-python
+RUN apt-get install -y v4l-utils
+CMD ["/bin/bash"]
