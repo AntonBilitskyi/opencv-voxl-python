@@ -36,7 +36,7 @@ RUN dpkg -i modalai-opencl-dev_1.0-1.deb
 RUN apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev
 RUN wget https://www.python.org/ftp/python/3.9.1/Python-3.9.1.tgz
 RUN tar -xf Python-3.9.1.tgz
-RUN cd Python-3.9.1
+WORKDIR /home/opencv-opencl/Python-3.9.1
 RUN ./configure --enable-optimizations
 RUN make -j 4
 RUN make altinstall
